@@ -49,17 +49,13 @@ class NCBIRetriever:
 
         try:
             batch_size=min(max_records, 500)
-            handle=Entrez.efetch(
-                db="nucleotide",rettype="gb",retmode="text",retstart=start,retmax=batch_size,webenv=self.webenv,query_key=self.query_key
-            )
+            handle=Entrez.efetch(db="nucleotide",rettype="gb",retmode="text",retstart=start,retmax=batch_size,webenv=self.webenv,query_key=self.query_key)
             records=SeqIO.parse(handle,"genbank")
             filtered_records=[]
-
             for record in records:
                 seq_length=len(record.seq)
                 if self.min_length<=seq_length<=self.max_length:
                     filtered_records.append((record.id,seq_length))
-
             return filtered_records
 
         except Exception as e:
@@ -106,6 +102,5 @@ def main():
     generate_csv(records,output_csv)
     output_plot=f"taxid_{taxid}_sequence_lengths.png"
     generate_plot(records, output_plot)
-
 if __name__ == "__main__":
     main()
