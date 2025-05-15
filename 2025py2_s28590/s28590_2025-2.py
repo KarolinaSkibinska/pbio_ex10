@@ -72,12 +72,10 @@ class NCBIRetriever:
             print(f"Error fetching records:{e}")
             return []
 
-
 def generate_csv(records,output_filename):
     df=pd.DataFrame(records,columns=["Accession Number","Sequence Length"])
     df.to_csv(output_filename,index=False)
     print(f"CSV report generated:{output_filename}")
-
 
 def generate_plot(records,plot_filename):
     records=sorted(records,key=lambda x: x[1],reverse=True)
@@ -92,7 +90,6 @@ def generate_plot(records,plot_filename):
     plt.tight_layout()
     plt.savefig(plot_filename)
     print(f"Plot saved as:{plot_filename}")
-
 
 def main():
     email=input("Enter your email address for NCBI: ")
@@ -115,7 +112,6 @@ def main():
     generate_csv(records,output_csv)
     output_plot=f"taxid_{taxid}_sequence_lengths.png"
     generate_plot(records, output_plot)
-
 
 if __name__ == "__main__":
     main()
