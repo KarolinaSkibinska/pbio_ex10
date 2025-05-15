@@ -7,7 +7,6 @@ class NCBIRetriever:
     def __init__(self,email,api_key):
         self.email=email
         self.api_key=api_key
-
         Entrez.email=email
         Entrez.api_key=api_key
         Entrez.tool='BioScriptEx10'
@@ -19,7 +18,6 @@ class NCBIRetriever:
             records=Entrez.read(handle)
             organism_name=records[0]["ScientificName"]
             print(f"Organism:{organism_name}(TaxID:{taxid})")
-
             search_term=f"txid{taxid}[Organism]"
             handle=Entrez.esearch(db="nucleotide",term=search_term,usehistory="y")
             search_results=Entrez.read(handle)
@@ -34,7 +32,6 @@ class NCBIRetriever:
             self.webenv=search_results["WebEnv"]
             self.query_key=search_results["QueryKey"]
             self.count=count
-
             self.records_to_fetch=[]
             self.min_length=min_length
             self.max_length=max_length
@@ -52,7 +49,6 @@ class NCBIRetriever:
 
         try:
             batch_size=min(max_records, 500)
-
             handle=Entrez.efetch(
                 db="nucleotide",
                 rettype="gb",
@@ -87,7 +83,6 @@ def generate_plot(records,plot_filename):
     records=sorted(records,key=lambda x: x[1],reverse=True)
     accession_numbers=[record[0] for record in records]
     lengths=[record[1] for record in records]
-
     plt.figure(figsize=(10, 6))
     plt.plot(accession_numbers,lengths,marker='o',linestyle='-',color='b')
     plt.xlabel('Accession Number')
@@ -102,30 +97,22 @@ def generate_plot(records,plot_filename):
 def main():
     email=input("Enter your email address for NCBI: ")
     api_key=input("Enter your NCBI API key: ")
-
     retriever=NCBIRetriever(email, api_key)
-
     taxid=input("Enter taxonomic ID (taxid) of the organism: ")
-
     min_length=int(input("Enter minimum sequence length: "))
     max_length=int(input("Enter maximum sequence length: "))
-
     count=retriever.search_taxid(taxid, min_length, max_length)
-
     if not count:
         print("No records found. Exiting.")
         return
-
     print("\nFetching filtered records...")
     records=retriever.fetch_records(start=0, max_records=20)
-
     if not records:
         print("No filtered records found. Exiting.")
         return
 
     output_csv=f"taxid_{taxid}_filtered_records.csv"
     generate_csv(records,output_csv)
-
     output_plot=f"taxid_{taxid}_sequence_lengths.png"
     generate_plot(records, output_plot)
 
