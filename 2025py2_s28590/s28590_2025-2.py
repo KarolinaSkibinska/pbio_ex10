@@ -23,7 +23,7 @@ class NCBIRetriever:
             search_results=Entrez.read(handle)
             count=int(search_results["Count"])
 
-            if count == 0:
+            if count==0:
                 print(f"No records found for{organism_name}")
                 return None
 
@@ -50,13 +50,7 @@ class NCBIRetriever:
         try:
             batch_size=min(max_records, 500)
             handle=Entrez.efetch(
-                db="nucleotide",
-                rettype="gb",
-                retmode="text",
-                retstart=start,
-                retmax=batch_size,
-                webenv=self.webenv,
-                query_key=self.query_key
+                db="nucleotide",rettype="gb",retmode="text",retstart=start,retmax=batch_size,webenv=self.webenv,query_key=self.query_key
             )
             records=SeqIO.parse(handle,"genbank")
             filtered_records=[]
